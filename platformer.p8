@@ -9,6 +9,11 @@ p={
  h=1,
  spd=2,
  sprite=64,
+ --states
+ --0: idle
+ --1: moving on the ground
+ --2: jumping
+ --3: falling
  state=0
 }
 
@@ -22,8 +27,25 @@ function p:move()
 	o=btn(4)
 	x=btn(5)
 	
-	if(l)self.x-=self.spd
-	if(r)self.x+=self.spd 
+ --idle state
+ if(p.state==0)then
+  --todo: sprite
+  if(l or r)then p:changestate(1)
+  end
+ end
+
+ --walk state
+ if(p.state==1) then
+  --todo: sprite
+  if(l)self.x-=self.spd
+  if(r)self.x+=self.spd 
+ 
+  if(not(l or r))p:changestate(0)
+ end
+end
+
+function p:changestate(s)
+ p.state=s
 end
 
 function p:update()
