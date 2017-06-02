@@ -3,11 +3,12 @@ version 8
 __lua__
 
 p={
- x=60,
- y=60,
+ x=10,
+ y=10,
  w=1,
  h=1,
- spd=2,
+ spd_x=2,
+ spd_y=3,
  sprite=64,
  --states
  --0: idle
@@ -28,19 +29,31 @@ function p:move()
 	x=btn(5)
 	
  --idle state
- if(p.state==0)then
+ if(self.state==0)then
   --todo: sprite
-  if(l or r)then p:changestate(1)
+  if(canfall(self))then self:changestate(3)
+  elseif(l or r)then self:changestate(1)
   end
  end
 
  --walk state
- if(p.state==1) then
+ if(self.state==1) then
   --todo: sprite
-  if(l)self.x-=self.spd
-  if(r)self.x+=self.spd 
- 
-  if(not(l or r))p:changestate(0)
+  if(l)self.x-=self.spd_x
+  if(r)self.x+=self.spd_x 
+  
+  if(canfall(self))then self:changestate(3)
+  elseif(not(l or r))then self:changestate(0)
+  end
+ end
+
+ --fall state
+ if(self.state==3) then
+  if (canfall(self)) then
+   self.y+=self.spd_y
+  else 
+   self:changestate(0)
+  end
  end
 end
 
@@ -62,9 +75,22 @@ end
 
 function _draw()
  cls()
- map(0,0,15,15)
+ printdebug()
+ map(0,0,0,0)
  p:draw()
 end
+
+--check if object can fall
+function canfall(o)
+ v=mget(p.x/8,(p.y+7+p.spd_y)/8)
+ return not fget(v,7)
+end
+
+function printdebug()
+ print("x:"..p.x.." y:"..p.y.." s:"..p.state)
+ print("canfall:")print(canfall(p))
+end
+
 __gfx__
 eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeecccccccceeeeeeeecccccccceeeeeeeecccccccceeeeeeeecccccccceeeeeeeecccccccceeeeeeeeccccccccebee
