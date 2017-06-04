@@ -61,7 +61,8 @@ function p:move()
   if (canfall(self)) then
    self.vel_y+=0.98
    self.y+=self.vel_y
-  else 
+  end
+  if(not(canfall(self)))then
    self.vel_y=0
    self.y=flr(flr(self.y)/8)*8
    self:changestate(0)
