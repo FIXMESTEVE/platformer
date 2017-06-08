@@ -19,7 +19,8 @@ p={
  --2: jumping
  --3: falling
  --4: wallclinging
- state=0
+ state=0,
+ jumppressed=false
 }
 
 function _init()
@@ -37,10 +38,12 @@ function p:move()
  if (key_l) self.vel_x=-2
  if (key_r) self.vel_x=2
 
+ if(not key_x and self.jumppressed)self.jumppressed=false
 
  -- y velocity
- if grounded(self) then
-     if (key_x) then
+ if grounded(self) and self.vel_y>=0 then
+     if (key_x and not self.jumppressed) then
+         self.jumppressed=true
          self.vel_y=-8
      else
          self.vel_y = 0
@@ -88,8 +91,8 @@ end
 
 --check if object can fall
 function grounded(obj)
- leftv=mget(flr(obj.x)/8,flr(obj.y)/8+1)
- rightv=mget(flr(obj.x+7)/8,flr(obj.y)/8+1)
+ leftv=mget((obj.x)/8,(obj.y+8)/8)
+ rightv=mget((obj.x+7)/8,(obj.y+8)/8)
  return fget(leftv,7) or fget(rightv, 7)
 end
 
